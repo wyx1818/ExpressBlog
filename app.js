@@ -46,6 +46,23 @@ app.use('/admin',require('./middleware/loginGuard'))
 app.use('/admin', adminRouter)
 app.use('/home', homeRouter)
 
+// 错误处理中间件
+app.use((err, req, res, next) => {
+  // 反序列化字符串，将字符串转换为对象类型
+  // JSON.parse()
+  const result =JSON.parse(err)
+  let params = []
+  // [ 'message=密码比对失败，不能进行用户信息的修改', 'id=5e818db4ff08f809c421b7ba' ]
+  // 遍历错误信息，构建数组结构，便于拼接时加上&分割符
+  for (let attr in result) {
+    if (attr !== 'path') {
+      params.push(attr + '=' + result[attr])
+    }
+  }
+  // 重定向到 /user-edit?message=密码比对失败，不能进行用户信息的修改&id=5e818db4ff08f809c421b7ba
+  res.redirect(`${result.path}?${params.join('&')}`)
+})
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404))

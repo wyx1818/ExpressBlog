@@ -5,7 +5,6 @@ const guard = (req, res, next) => {
     res.redirect('/admin/login')
   } else {
     // 用户是登录状态将请求放行
-    console.log('放行')
     next()
   }
 }

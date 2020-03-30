@@ -1,5 +1,7 @@
 // 导入用户集合构造函数，之前导出的是一个集合，需要解构
 const { User } = require('../../model/user')
+// 导入加密模块
+const bcrypt = require('bcryptjs')
 
 module.exports = async (req, res) => {
   // 接受请求参数，只有前端验证不安全，需要后端进行验证
@@ -15,7 +17,7 @@ module.exports = async (req, res) => {
   // 查询到了用户
   if (user) {
     // 将客户端传递过来的密码和用户信息中的密码进行比对
-    if (password === user.password) {
+    if (bcrypt.compareSync(password, user.password)) {
       // 将用户名存储在请求对象中
       req.session.username = user.username
       req.app.locals.UserInfo = user
